@@ -36,7 +36,7 @@ const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => 
 
           subscriber.next(rawValue)
         });
-      }, 10);
+      }, 0);
     });
   })
 }
@@ -58,11 +58,11 @@ switchBtn$.pipe(throttleTime(300)).subscribe({
 
 xBtn$.pipe(throttleTime(300)).subscribe({
   next: value => {
-    if(value > 800) {
+    if(value > 650) {
       console.log('Move left')
       PubSub.publish(SPI_EVENTS.MOVE_LEFT)
     }
-    if(value < 200) {
+    if(value < 350) {
       console.log('Move right')
       PubSub.publish(SPI_EVENTS.MOVE_RIGHT)
     }
