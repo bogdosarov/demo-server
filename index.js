@@ -24,7 +24,7 @@ const switchButton = mcpadc.open(SWITCH_CHANEL, {speedHz: SPEED_HZ}, err => {
   if (err) throw err;
 
   setInterval(_ => {
-    tempSensor.read((err, { rawValue }) => {
+    switchButton.read((err, { rawValue }) => {
       if (err) throw err;
 
       console.log(`SWITCH_CHANEL: ${rawValue}`)
@@ -35,7 +35,7 @@ const xButton = mcpadc.open(X_CHANEL, {speedHz: SPEED_HZ}, err => {
   if (err) throw err;
 
   setInterval(_ => {
-    tempSensor.read((err, { rawValue }) => {
+    xButton.read((err, { rawValue }) => {
       if (err) throw err;
 
       console.log(`X_CHANEL: ${rawValue}`)
@@ -46,7 +46,7 @@ const yButton = mcpadc.open(Y_CHANEL, {speedHz: SPEED_HZ}, err => {
   if (err) throw err;
 
   setInterval(_ => {
-    tempSensor.read((err, { rawValue }) => {
+    yButton.read((err, { rawValue }) => {
       if (err) throw err;
 
       console.log(`Y_CHANEL: ${rawValue}`)
