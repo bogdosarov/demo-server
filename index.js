@@ -49,19 +49,19 @@ const xBtn$ = observableFromChannel({ channel: X_CHANEL })
 
 switchBtn$.pipe(throttleTime(400)).subscribe({
   next: value => {
-    if(value > 800) {
-      console.log('Move left')
-    }
     if(value < 200) {
-      console.log('Move right')
+      console.log('Select')
     }
   }
 })
 
 xBtn$.pipe(throttleTime(400)).subscribe({
   next: value => {
+    if(value > 800) {
+      console.log('Move left')
+    }
     if(value < 200) {
-      console.log('Select')
+      console.log('Move right')
     }
   }
 })
