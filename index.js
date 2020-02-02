@@ -24,32 +24,43 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-
-  // PubSub.subscribe()
-    socket.emit('gpio', 'data');
-});
-
-const switchBtn = mcpadc.open(SWITCH_CHANEL, {speedHz: SPEED_HZ}, err => {
-  if (err) throw err;
-});
-
-const switchBtn$ = new Observable(subscriber => {
-  setInterval(_ => {
-    switchBtn.read((err, { rawValue }) => {
+const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => {
+  return new Observable(subscriber => {
+    const channel = mcpadc.open(channel, options, err => {
       if (err) throw err;
 
-      subscriber.next(rawValue)
+      setInterval(_ => {
+        channel.read((err, { rawValue }) => {
+          if (err) throw err;
+
+          subscriber.next(rawValue)
+        });
+      }, 10);
     });
-  }, 10);
-})
+  })
+}
+
+const switchBtn$ = observableFromChannel({ channel: SWITCH_CHANEL })
+const xBtn$ = observableFromChannel({ channel: X_CHANEL })
 
 switchBtn$.subscribe({
   next: value => {
     console.log(`SWITCH_CHANEL: ${value}`)
   }
 })
+
+xBtn$.subscribe({
+  next: value => {
+    console.log(`X_CHANEL: ${value}`)
+  }
+})
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+
+  // PubSub.subscribe()
+  socket.emit('gpio', 'data');
+});
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
