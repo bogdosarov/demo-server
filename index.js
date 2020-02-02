@@ -51,6 +51,7 @@ switchBtn$.pipe(throttleTime(300)).subscribe({
   next: value => {
     if(value < 200) {
       console.log('Select')
+      PubSub.publish(SPI_EVENTS.ENTER)
     }
   }
 })
@@ -59,9 +60,11 @@ xBtn$.pipe(throttleTime(300)).subscribe({
   next: value => {
     if(value > 800) {
       console.log('Move left')
+      PubSub.publish(SPI_EVENTS.MOVE_LEFT)
     }
     if(value < 200) {
       console.log('Move right')
+      PubSub.publish(SPI_EVENTS.MOVE_RIGHT)
     }
   }
 })
@@ -69,8 +72,17 @@ xBtn$.pipe(throttleTime(300)).subscribe({
 io.on('connection', function(socket){
   console.log('a user connected');
 
-  // PubSub.subscribe()
-  socket.emit('gpio', 'data');
+  PubSub.subscribe(SPI_EVENTS.MOVE_RIGHT, () => {
+    socket.emit(SPI_EVENTS.MOVE_RIGHT);
+  })
+
+  PubSub.subscribe(SPI_EVENTS.MOVE_LEFT, () => {
+    socket.emit(SPI_EVENTS.MOVE_LEFT);
+  })
+
+  PubSub.subscribe(SPI_EVENTS.ENTER, () => {
+    socket.emit(SPI_EVENTS.ENTER);
+  })
 });
 
 http.listen(3000, function(){
