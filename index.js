@@ -30,16 +30,17 @@ const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => 
     const connection = mcpadc.open(channel, options, err => {
       if (err) throw err;
 
-      setInterval(_ => {
-        connection.read((err, { rawValue }) => {
-          if (err) throw err;
+      setInterval(() => {
+          connection.read((err, { rawValue }) => {
+            if (err) throw err;
 
-          subscriber.next(rawValue)
-        });
-      }, 0);
+            subscriber.next(rawValue)
+          });
+      }, 15);
     });
   })
 }
+
 // left  > 800
 // right < 200
 // 1023 516 2
@@ -47,7 +48,7 @@ const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => 
 const switchBtn$ = observableFromChannel({ channel: SWITCH_CHANEL })
 const xBtn$ = observableFromChannel({ channel: X_CHANEL })
 
-switchBtn$.pipe(throttleTime(300)).subscribe({
+switchBtn$.pipe(throttleTime(200)).subscribe({
   next: value => {
     if(value < 200) {
       console.log('Select')
@@ -56,7 +57,7 @@ switchBtn$.pipe(throttleTime(300)).subscribe({
   }
 })
 
-xBtn$.pipe(throttleTime(300)).subscribe({
+xBtn$.pipe(throttleTime(200)).subscribe({
   next: value => {
     if(value > 650) {
       console.log('Move left')
