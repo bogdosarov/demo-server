@@ -48,7 +48,7 @@ const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => 
 const switchBtn$ = observableFromChannel({ channel: SWITCH_CHANEL })
 const xBtn$ = observableFromChannel({ channel: X_CHANEL })
 
-switchBtn$.pipe(throttleTime(200)).subscribe({
+switchBtn$.pipe(throttleTime(150)).subscribe({
   next: value => {
     if(value < 200) {
       console.log('Select')
@@ -57,13 +57,13 @@ switchBtn$.pipe(throttleTime(200)).subscribe({
   }
 })
 
-xBtn$.pipe(throttleTime(200)).subscribe({
+xBtn$.pipe(throttleTime(150)).subscribe({
   next: value => {
-    if(value > 650) {
+    if(value > 850) {
       console.log('Move left')
       PubSub.publish(SPI_EVENTS.MOVE_LEFT)
     }
-    if(value < 350) {
+    if(value < 150) {
       console.log('Move right')
       PubSub.publish(SPI_EVENTS.MOVE_RIGHT)
     }
