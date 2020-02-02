@@ -3,6 +3,7 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const mcpadc = require('mcp-spi-adc');
+const { bindNodeCallback } = require('rxjs');
 
 app.use(express.static(__dirname + '/public'));
 
@@ -16,43 +17,14 @@ io.on('connection', function(socket){
 });
 
 const SWITCH_CHANEL = 0;
-const X_CHANEL = 1;
-const Y_CHANEL = 2;
+const X_CHANEL = 2;
+const Y_CHANEL = 1;
 const SPEED_HZ = 20000;
 
-const switchButton = mcpadc.open(SWITCH_CHANEL, {speedHz: SPEED_HZ}, err => {
-  if (err) throw err;
+const switchBtnObservable = bindNodeCallback(mcpadc.open)
+const switchBtn = switchBtnObservable(SWITCH_CHANEL, { speedHz: SPEED_HZ })
 
-  setInterval(_ => {
-    switchButton.read((err, { rawValue }) => {
-      if (err) throw err;
-
-      console.log(`SWITCH_CHANEL: ${rawValue}`)
-    });
-  }, 100);
-});
-const xButton = mcpadc.open(X_CHANEL, {speedHz: SPEED_HZ}, err => {
-  if (err) throw err;
-
-  setInterval(_ => {
-    xButton.read((err, { rawValue }) => {
-      if (err) throw err;
-
-      console.log(`X_CHANEL: ${rawValue}`)
-    });
-  }, 100);
-});
-const yButton = mcpadc.open(Y_CHANEL, {speedHz: SPEED_HZ}, err => {
-  if (err) throw err;
-
-  setInterval(_ => {
-    yButton.read((err, { rawValue }) => {
-      if (err) throw err;
-
-      console.log(`Y_CHANEL: ${rawValue}`)
-    });
-  }, 100);
-});
+switchBtn.subscribe(value => console.log(value), e => console.error(e))
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
