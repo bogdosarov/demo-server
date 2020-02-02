@@ -15,14 +15,41 @@ io.on('connection', function(socket){
     socket.emit('gpio', 'data');
 });
 
-const tempSensor = mcpadc.open(1, {speedHz: 20000}, err => {
+const SWITCH_CHANEL = 0;
+const X_CHANEL = 1;
+const Y_CHANEL = 2;
+const SPEED_HZ = 20000;
+
+const switchButton = mcpadc.open(SWITCH_CHANEL, {speedHz: SPEED_HZ}, err => {
   if (err) throw err;
 
   setInterval(_ => {
-    tempSensor.read((err, reading) => {
+    tempSensor.read((err, { rawValue }) => {
       if (err) throw err;
 
-      console.log((reading.value * 3.3 - 0.5) * 100);
+      console.log(`SWITCH_CHANEL: ${rawValue}`)
+    });
+  }, 100);
+});
+const xButton = mcpadc.open(X_CHANEL, {speedHz: SPEED_HZ}, err => {
+  if (err) throw err;
+
+  setInterval(_ => {
+    tempSensor.read((err, { rawValue }) => {
+      if (err) throw err;
+
+      console.log(`X_CHANEL: ${rawValue}`)
+    });
+  }, 100);
+});
+const yButton = mcpadc.open(Y_CHANEL, {speedHz: SPEED_HZ}, err => {
+  if (err) throw err;
+
+  setInterval(_ => {
+    tempSensor.read((err, { rawValue }) => {
+      if (err) throw err;
+
+      console.log(`Y_CHANEL: ${rawValue}`)
     });
   }, 100);
 });
