@@ -26,11 +26,11 @@ app.get('/', function(req, res){
 
 const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => {
   return new Observable(subscriber => {
-    const channel = mcpadc.open(channel, options, err => {
+    const connection = mcpadc.open(channel, options, err => {
       if (err) throw err;
 
       setInterval(_ => {
-        channel.read((err, { rawValue }) => {
+        connection.read((err, { rawValue }) => {
           if (err) throw err;
 
           subscriber.next(rawValue)
