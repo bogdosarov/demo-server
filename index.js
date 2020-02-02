@@ -5,6 +5,7 @@ const io = require('socket.io')(http);
 const mcpadc = require('mcp-spi-adc');
 const PubSub = require('pubsub-js');
 const { Observable } = require('rxjs')
+const { throttleTime } = require('rxjs/operators')
 
 const SWITCH_CHANEL = 0;
 const Y_CHANEL = 1;
@@ -39,19 +40,29 @@ const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => 
     });
   })
 }
+// left  > 800
+// right < 200
+// 1023 516 2
 
 const switchBtn$ = observableFromChannel({ channel: SWITCH_CHANEL })
 const xBtn$ = observableFromChannel({ channel: X_CHANEL })
 
-switchBtn$.subscribe({
+switchBtn$.pipe(throttleTime(400)).subscribe({
   next: value => {
-    console.log(`SWITCH_CHANEL: ${value}`)
+    if(value > 800) {
+      console.log('Move left')
+    }
+    if(value < 200) {
+      console.log('Move right')
+    }
   }
 })
 
-xBtn$.subscribe({
+xBtn$.pipe(throttleTime(400)).subscribe({
   next: value => {
-    console.log(`X_CHANEL: ${value}`)
+    if(value < 200) {
+      console.log('Select')
+    }
   }
 })
 
