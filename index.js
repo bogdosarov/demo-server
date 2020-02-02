@@ -47,7 +47,7 @@ const observableFromChannel = ({ channel, options = { speedHz: SPEED_HZ } }) => 
 const switchBtn$ = observableFromChannel({ channel: SWITCH_CHANEL })
 const xBtn$ = observableFromChannel({ channel: X_CHANEL })
 
-switchBtn$.pipe(throttleTime(400)).subscribe({
+switchBtn$.pipe(throttleTime(300)).subscribe({
   next: value => {
     if(value < 200) {
       console.log('Select')
@@ -55,7 +55,7 @@ switchBtn$.pipe(throttleTime(400)).subscribe({
   }
 })
 
-xBtn$.pipe(throttleTime(400)).subscribe({
+xBtn$.pipe(throttleTime(300)).subscribe({
   next: value => {
     if(value > 800) {
       console.log('Move left')
